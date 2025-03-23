@@ -2,29 +2,26 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $fillable = ['name', 'email', 'password'];
 
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $hidden = [
         'password',
@@ -32,9 +29,9 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var array<string, string>
      */
     protected function casts(): array
     {
@@ -44,7 +41,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Register a new user with hashed password.
+     * Register a new user without hashing the password.
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -54,7 +51,7 @@ class User extends Authenticatable
         $user = self::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password), // تشفير كلمة المرور
+            'password' => $request->password, // كلمة المرور بدون تشفير
         ]);
 
         return response()->json($user);
