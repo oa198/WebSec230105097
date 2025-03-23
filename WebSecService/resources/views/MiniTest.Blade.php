@@ -12,6 +12,7 @@
         <h2 class="text-center mb-4">Supermarket Bill</h2>
         <table class="table table-bordered table-striped table-hover text-center">
     <thead class="table-primary">
+    <thead class="table-primary">
         <tr>
             <th>Item</th>
             <th>Quantity</th>
