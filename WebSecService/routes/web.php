@@ -96,3 +96,7 @@ Route::get('/grades', function () {
 Route::get('/grades', [GradeController::class, 'index'])->name('grades.index');
 Route::get('/grades/create', [GradeController::class, 'create'])->name('grades.create');
 Route::post('/grades', [GradeController::class, 'store'])->name('grades.store');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
