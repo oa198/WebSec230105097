@@ -1,58 +1,60 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use App\Http\Controllers\GradeController;
-use App\Http\Controllers\QuestionController;
-use App\Http\Controllers\TaskController;
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
-    Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
-    Route::patch('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
-    Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
-});
-
-require __DIR__.'/auth.php';
 
 Route::get('/', function () {
-    return view('welcome');
-})->name('welcome');
-
-Route::get('/profile', function () {
-    return view('profile');
-})->middleware('auth');
-
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
-    Route::post('/profile/update-password', [ProfileController::class, 'updatePassword'])->name('profile.updatePassword');
+    return view('Home');
 });
 
+Route::get('/users', [UserController::class, 'index'])->name('exercises3.Users.index');
+Route::get('/users/create', [UserController::class, 'create'])->name('exercises3.Users.create');
+Route::post('/users', [UserController::class, 'store'])->name('exercises3.Users.store');
+Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('exercises3.Users.edit');
+Route::put('/users/{user}', [UserController::class, 'update'])->name('exercises3.Users.update');
+// Use a distinct URI for profile to avoid conflict
+Route::get('/users/{user}/profile', [UserController::class, 'profile'])->name('exercises3.Users.profile');
+Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('exercises3.Users.destroy');
+// Now this route can work without conflict
+Route::get('/users/{user}', [UserController::class, 'show'])->name('exercises3.Users.show');
+Route::get('register', [UserController::class, 'register'])->name('register');
+Route::post('register', [UserController::class, 'doRegister'])->name('do_register');
+Route::get('login', [UserController::class, 'login'])->name('login');
+Route::post('login', [UserController::class, 'doLogin'])->name('do_login');
+Route::get('logout', [UserController::class, 'doLogout'])->name('do_logout');
 
-Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [LoginController::class, 'login']);
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('/grades', [GradeController::class, 'index'])->name('exercises3.Grades.index');
+Route::get('/grades/create', [GradeController::class, 'create'])->name('exercises3.Grades.create');
+Route::post('/grades', [GradeController::class, 'store'])->name('exercises3.Grades.store');
+Route::get('/grades/{grade}/edit', [GradeController::class, 'edit'])->name('exercises3.Grades.edit');
+Route::put('/grades/{grade}', [GradeController::class, 'update'])->name('exercises3.Grades.update');
+Route::delete('/grades/{grade}', [GradeController::class, 'destroy'])->name('exercises3.Grades.destroy');
+Route::get('/grades/{grade}', [GradeController::class, 'show'])->name('exercises3.Grades.show');
 
-Route::middleware(['auth'])->group(function () {
-    Route::resource('users', UserController::class);
+// Rest of your routes remain unchanged
+Route::get('/multable', function (Request $request) {
+    $j = $request->number ?? 5;
+    $msg = $request->msg;
+    return view('Multable', compact("j", "msg"));
 });
-Route::get('/users', [UserController::class, 'index'])->name('users.index');
-Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
 
+Route::get('/even', function () {
+    return view('Even');
+});
 
-Route::resource('questions', QuestionController::class);
+Route::get('/prime', function () {
+    return view('Prime');
+});
 
-Route::get('/MiniTest', function () {
-    $bill = [
+Route::get('/minitest', function () {
+    $marks = [
         ['item' => 'Orange', 'quantity' => 2, 'price' => 3.00],
         ['item' => 'Apple', 'quantity' => 1, 'price' => 4.50],
         ['item' => 'Water', 'quantity' => 3, 'price' => 2.00]
     ];
-
-    return view('MiniTest', ['bill' => $bill]);
+    return view('Exercises2.minitest', compact('marks'));
 });
 
 Route::get('/Transcript', function () {
@@ -71,32 +73,54 @@ Route::get('/Transcript', function () {
     $totalCredits = collect($student['courses'])->sum('credit_hours');
     $finalGPA = $totalCredits > 0 ? number_format($totalPoints / $totalCredits, 2) : 0;
 
-    return view('Transcript', compact('student', 'finalGPA'));
+    return view('exercises2.Transcript', compact('student', 'finalGPA'));
 });
 
 Route::get('/products', function () {
     $products = [
-        ['name' => 'Laptop', 'image' => 'laptop.jpg', 'price' => 999.99, 'description' => 'Powerful gaming laptop.'],
-        ['name' => 'Smartphone', 'image' => 'phone.jpg', 'price' => 499.99, 'description' => 'Latest smartphone with AI camera.'],
-        ['name' => 'Headphones', 'image' => 'headphones.jpg', 'price' => 99.99, 'description' => 'Noise-canceling headphones.'],
+        [
+            'id' => 1,
+            'name' => 'Wireless Headphones',
+            'price' => 99.99,
+            'description' => 'Premium noise-cancelling wireless headphones with 30hr battery life.'
+        ],
+        [
+            'id' => 2,
+            'name' => 'Smart Watch',
+            'price' => 199.99,
+            'description' => 'Fitness tracker with heart rate monitor and GPS.'
+        ],
+        [
+            'id' => 3,
+            'name' => 'Bluetooth Speaker',
+            'price' => 59.99,
+            'description' => 'Portable waterproof speaker with 20hr playtime.'
+        ],
+        [
+            'id' => 4,
+            'name' => 'Phone Charger',
+            'price' => 19.99,
+            'description' => 'Fast-charging USB-C cable with adapter.'
+        ]
     ];
-    return view('products', compact('products'));
+    return view('exercises2.products', compact('products'));
 });
 
 Route::get('/calculator', function () {
-    return view('calculator');
+    return view('exercises2.calculator');
 });
 
-Route::resource('grades', GradeController::class);
-
-Route::get('/grades', function () {
-    return view('grades.index');
+Route::get('/calculatorGPA', function () {
+    $courses = [
+        ['code' => 'CS101', 'title' => 'Introduction to Programming', 'credits' => 3],
+        ['code' => 'MATH201', 'title' => 'Calculus I', 'credits' => 4],
+        ['code' => 'ENG102', 'title' => 'Academic Writing', 'credits' => 2],
+        ['code' => 'PHYS101', 'title' => 'General Physics', 'credits' => 4],
+        ['code' => 'CHEM101', 'title' => 'General Chemistry', 'credits' => 4]
+    ];
+    return view('exercises2.calculatorGPA', compact('courses'));
 });
 
-Route::get('/grades', [GradeController::class, 'index'])->name('grades.index');
-Route::get('/grades/create', [GradeController::class, 'create'])->name('grades.create');
-Route::post('/grades', [GradeController::class, 'store'])->name('grades.store');
-
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/test', function () {
+    return view('test');
+});
