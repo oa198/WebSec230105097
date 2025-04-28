@@ -10,38 +10,38 @@
 <body>
     <div class="container mt-5">
         <h2 class="text-center mb-4">Supermarket Bill</h2>
-        <table class="table table-bordered table-striped table-hover text-center">
-    <thead class="table-primary">
-    <thead class="table-primary">
-        <tr>
-            <th>Item</th>
-            <th>Quantity</th>
-            <th>Price</th>
-            <th>Total</th>
-        </tr>
-    </thead>
-    <tbody class="table-light">
-        @foreach ($bill as $item)
-        <tr>
-            <td>{{ $item['item'] }}</td>
-            <td>{{ $item['quantity'] }}</td>
-            <td>${{ number_format($item['price'], 2) }}</td>
-            <td>${{ number_format($item['quantity'] * $item['price'], 2) }}</td>
-        </tr>
-        @endforeach
-    </tbody>
-    <tfoot class="table-warning">
-        <tr>
-            <td colspan="3" class="text-end fw-bold">Total Amount</td>
-            <td class="fw-bold">
-                ${{ number_format(collect($bill)->sum(fn($item) => $item['quantity'] * $item['price']), 2) }}
-            </td>
-        </tr>
-    </tfoot>
-</table>
 
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover text-center">
+                <caption class="text-start text-muted">Summary of purchased items</caption>
+                <thead class="table-primary">
+                    <tr>
+                        <th>Item</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody class="table-light">
+                    @foreach ($bill as $item)
+                    <tr>
+                        <td>{{ $item['item'] }}</td>
+                        <td>{{ $item['quantity'] }}</td>
+                        <td>${{ number_format($item['price'], 2) }}</td>
+                        <td>${{ number_format($item['quantity'] * $item['price'], 2) }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+                <tfoot class="table-warning">
+                    <tr>
+                        <td colspan="3" class="text-end fw-bold">Total Amount</td>
+                        <td class="fw-bold">
+                            ${{ number_format(collect($bill)->sum(fn($item) => $item['quantity'] * $item['price']), 2) }}
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
     </div>
 </body>
 </html>
-
-
