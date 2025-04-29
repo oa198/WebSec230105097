@@ -4,10 +4,14 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\GradeController;
+use Illuminate\Support\Facades\Auth;
 
-Route::get('/', function () {
+
+Auth::routes();
+
+Route::get('/home', function () {
     return view('Home');
-});
+})->name('home');
 
 Route::get('/users', [UserController::class, 'index'])->name('exercises3.Users.index');
 Route::get('/users/create', [UserController::class, 'create'])->name('exercises3.Users.create');
@@ -19,11 +23,7 @@ Route::get('/users/{user}/profile', [UserController::class, 'profile'])->name('e
 Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('exercises3.Users.destroy');
 // Now this route can work without conflict
 Route::get('/users/{user}', [UserController::class, 'show'])->name('exercises3.Users.show');
-Route::get('register', [UserController::class, 'register'])->name('register');
-Route::post('register', [UserController::class, 'doRegister'])->name('do_register');
-Route::get('login', [UserController::class, 'login'])->name('login');
-Route::post('login', [UserController::class, 'doLogin'])->name('do_login');
-Route::get('logout', [UserController::class, 'doLogout'])->name('do_logout');
+
 
 Route::get('/grades', [GradeController::class, 'index'])->name('exercises3.Grades.index');
 Route::get('/grades/create', [GradeController::class, 'create'])->name('exercises3.Grades.create');
@@ -124,3 +124,5 @@ Route::get('/calculatorGPA', function () {
 Route::get('/test', function () {
     return view('test');
 });
+
+
