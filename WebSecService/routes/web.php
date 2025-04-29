@@ -3,9 +3,10 @@
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
-use App\Http\Controllers\GradeController;
+use App\Http\Controllers\GradeController; // Ensure this matches the actual namespace of GradeController
 use Illuminate\Support\Facades\Auth;
-
+use App\Http\Controllers\CoursesController;
+use App\Http\Controllers\GradesController;
 
 Auth::routes();
 
@@ -25,13 +26,11 @@ Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('exerci
 Route::get('/users/{user}', [UserController::class, 'show'])->name('exercises3.Users.show');
 
 
-Route::get('/grades', [GradeController::class, 'index'])->name('exercises3.Grades.index');
-Route::get('/grades/create', [GradeController::class, 'create'])->name('exercises3.Grades.create');
-Route::post('/grades', [GradeController::class, 'store'])->name('exercises3.Grades.store');
-Route::get('/grades/{grade}/edit', [GradeController::class, 'edit'])->name('exercises3.Grades.edit');
-Route::put('/grades/{grade}', [GradeController::class, 'update'])->name('exercises3.Grades.update');
-Route::delete('/grades/{grade}', [GradeController::class, 'destroy'])->name('exercises3.Grades.destroy');
-Route::get('/grades/{grade}', [GradeController::class, 'show'])->name('exercises3.Grades.show');
+
+Route::resource('courses', CoursesController::class);
+Route::resource('grades', GradesController::class);
+Route::get('/grades/{id}', [GradesController::class, 'show'])->name('exercises3.Grades.show');
+
 
 // Rest of your routes remain unchanged
 Route::get('/multable', function (Request $request) {

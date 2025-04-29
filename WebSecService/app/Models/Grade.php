@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -8,8 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class Grade extends Model
 {
     protected $fillable = [
-        'course_code', 'course_name', 'credit_hours',
-        'grade', 'term', 'year'
+        'course_code',
+        'course_name',
+        'credit_hours',
+        'grade',
+        'term',
+        'year',
+        'user_id',
+        'course_id', // ✅ تمت إضافته
     ];
 
     public static $gradePoints = [
@@ -23,10 +28,15 @@ class Grade extends Model
     {
         return self::$gradePoints[$this->grade] ?? 0;
     }
-    
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function course() // ✅ علاقة جديدة
+    {
+        return $this->belongsTo(Course::class);
     }
 
     public function getQualityPointsAttribute()

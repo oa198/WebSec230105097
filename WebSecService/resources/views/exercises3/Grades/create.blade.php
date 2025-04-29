@@ -11,7 +11,6 @@
         <div class="card-body">
             <form action="{{ route('exercises3.Grades.store') }}" method="POST">
                 @csrf
-                <input type="hidden" name="user_id" value="2">
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="course_code" class="form-label">Course Code</label>
@@ -46,9 +45,7 @@
                         <select class="form-select @error('grade') is-invalid @enderror" id="grade" name="grade" required>
                             <option value="">Select Grade</option>
                             @foreach(array_keys(App\Models\Grade::$gradePoints) as $gradeOption)
-                            <option value="{{ $gradeOption }}" {{ old('grade') == $gradeOption ? 'selected' : '' }}>
-                                {{ $gradeOption }}
-                            </option>
+                            <option value="{{ $gradeOption }}" {{ old('grade') == $gradeOption ? 'selected' : '' }}>{{ $gradeOption }}</option>
                             @endforeach
                         </select>
                         @error('grade')
@@ -61,9 +58,7 @@
                         <select class="form-select @error('term') is-invalid @enderror" id="term" name="term" required>
                             <option value="">Select</option>
                             @foreach([1, 2, 3] as $termOption)
-                            <option value="{{ $termOption }}" {{ old('term') == $termOption ? 'selected' : '' }}>
-                                {{ $termOption }}
-                            </option>
+                            <option value="{{ $termOption }}" {{ old('term') == $termOption ? 'selected' : '' }}>{{ $termOption }}</option>
                             @endforeach
                         </select>
                         @error('term')
@@ -74,8 +69,7 @@
                     <div class="col-md-2 mb-3">
                         <label for="year" class="form-label">Year</label>
                         <input type="number" class="form-control @error('year') is-invalid @enderror"
-                               id="year" name="year" value="{{ old('year', date('Y')) }}"
-                               min="2000" max="2099" required>
+                               id="year" name="year" value="{{ old('year', date('Y')) }}" min="2000" max="2099" required>
                         @error('year')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror

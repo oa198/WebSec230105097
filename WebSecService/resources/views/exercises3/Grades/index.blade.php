@@ -18,16 +18,14 @@
 
         @foreach($terms as $term => $termGrades)
             <div class="card mb-4">
-                <div class="card-header">
-                    Term {{ $term }}
-                </div>
+                <div class="card-header">Term {{ $term }}</div>
                 <div class="card-body">
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Course</th>
-                                <th>Code</th>
-                                <th>CH</th>
+                                <th>Course Code</th>
+                                <th>Course Name</th>
+                                <th>Credit Hours</th>
                                 <th>Grade</th>
                                 <th>Actions</th>
                             </tr>
@@ -35,21 +33,16 @@
                         <tbody>
                             @foreach($termGrades as $grade)
                                 <tr>
-                                    <td>{{ $grade->course_name }}</td>
                                     <td>{{ $grade->course_code }}</td>
+                                    <td>{{ $grade->course_name }}</td>
                                     <td>{{ $grade->credit_hours }}</td>
                                     <td>{{ $grade->grade }}</td>
                                     <td>
-                                        <a href="{{ route('exercises3.Grades.edit', $grade->id) }}"
-                                           class="btn btn-sm btn-primary">Edit</a>
-                                        <form action="{{ route('exercises3.Grades.destroy', $grade->id) }}"
-                                              method="POST" class="d-inline">
+                                        <a href="{{ route('exercises3.Grades.edit', $grade->id) }}" class="btn btn-warning">Edit</a>
+                                        <form action="{{ route('exercises3.Grades.destroy', $grade->id) }}" method="POST" style="display:inline-block;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger"
-                                                    onclick="return confirm('Are you sure?')">
-                                                Delete
-                                            </button>
+                                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
                                         </form>
                                     </td>
                                 </tr>

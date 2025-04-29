@@ -25,6 +25,7 @@
             <li><a class="dropdown-item" href="/calculatorGPA">GPA</a></li>
             <li><a class="dropdown-item" href="/users">Users</a></li>
             <li><a class="dropdown-item" href="/grades">Grades</a></li>
+            <li><a class="dropdown-item" href="/courses">Courses</a></li>
           </ul>
         </li>
       </ul>
