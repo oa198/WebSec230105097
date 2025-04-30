@@ -1,57 +1,40 @@
 @extends('layouts.master')
 
-@section('title', 'Add New Course')
+@section('title', 'Add Course')
 
 @section('content')
 <div class="container">
-    <div class="card">
-        <div class="card-header">
-            <h5 class="mb-0">Add New Course</h5>
+    <h2>Add New Course</h2>
+
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
-        <div class="card-body">
-            <form action="{{ route('courses.store') }}" method="POST">
-                @csrf
+    @endif
 
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="course_code" class="form-label">Course Code</label>
-                        <input type="text" class="form-control @error('course_code') is-invalid @enderror"
-                               id="course_code" name="course_code" value="{{ old('course_code') }}" required>
-                        @error('course_code')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label for="course_name" class="form-label">Course Name</label>
-                        <input type="text" class="form-control @error('course_name') is-invalid @enderror"
-                               id="course_name" name="course_name" value="{{ old('course_name') }}" required>
-                        @error('course_name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-                        <label for="credit_hours" class="form-label">Credit Hours</label>
-                        <input type="number" class="form-control @error('credit_hours') is-invalid @enderror"
-                               id="credit_hours" name="credit_hours" value="{{ old('credit_hours') }}"
-                               min="1" max="5" required>
-                        @error('credit_hours')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="mt-4">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Save Course
-                    </button>
-                    <a href="{{ route('courses.index') }}" class="btn btn-secondary">
-                        <i class="fas fa-times"></i> Cancel
-                    </a>
-                </div>
-            </form>
+    <form action="{{ route('exercises3.courses.store') }}" method="POST">
+        @csrf
+        <div class="mb-3">
+            <label for="code" class="form-label">Course Code</label>
+            <input type="text" name="code" id="code" class="form-control" value="{{ old('code') }}">
         </div>
-    </div>
+        <div class="mb-3">
+            <label for="name" class="form-label">Course Name</label>
+            <input type="text" name="name" id="name" class="form-control" value="{{ old('name') }}">
+        </div>
+        <div class="mb-3">
+            <label for="credit_hours" class="form-label">Credit Hours</label>
+            <input type="number" name="credit_hours" id="credit_hours" class="form-control" value="{{ old('credit_hours') }}">
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea name="description" id="description" class="form-control">{{ old('description') }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Create Course</button>
+    </form>
 </div>
 @endsection

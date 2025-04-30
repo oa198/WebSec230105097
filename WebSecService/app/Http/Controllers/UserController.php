@@ -5,120 +5,72 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Traits\HasRoles;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+
 
 class UserController extends Controller
 {
 
-    public function register(Request $request) {
-        return view('exercises3.Users.register');
-    }
+    use HasRoles;
 
-    public function doRegister(Request $request) {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:8|confirmed'
-        ]);
-
-        User::create([
-        'name' => $validatedData['name'],
-        'email' => $validatedData['email'],
-        'password' => bcrypt($validatedData['password'])
-    ]);
-
-    if($request->password!=$request->confirm_password)
-        return redirect()->route('register', ['error'=>'Confirm password not matched.']);
-    if(!$request->email || !$request->name || !$request->password)
-        return redirect()->route('register', ['error'=>'Missing registration info.']);
-    if(User::where('email', $request->email)->first()) //Secure
-        return redirect()->route('register', ['error'=>'Missing registration info.']);
-
-        return redirect()->route('exercises3.Users.login')->with('success', 'User created successfully.');
-    }
-    public function login(Request $request) {
-        return view('exercises3.Users.login');
-    }
-    public function doLogin(Request $request) {
-        if(!Auth::attempt(['email'=> $request->email, 'password'=> $request->password]));
-        return redirect()->back()->withInput($request->input())->withErrors( 'Invalid login information.');
-        $user = User::where('email', $request->email)->first();
-        Auth::setUser($user);
-
-        return redirect()->route('/')->with('success', 'User login successfully.');
-
-
-    }
-    public function doLogout(Request $request) {
-        Auth::logout();
-        return redirect('/');
-    }
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
-
-    {
+        // Handle search filters and pagination
         $users = User::query()
-        ->when($request->name, function($query, $name) {
-            return $query->where('name', 'like', "%{$name}%");
-        })
-        ->when($request->email, function($query, $email) {
-            return $query->where('email', 'like', "%{$email}%");
-        })
-        ->orderBy('name')
-        ->paginate(10);
-}
-        return view('exercises3.users.index',compact('users'));
+            ->when($request->name, function($query, $name) {
+                return $query->where('name', 'like', "%{$name}%");
+            })
+            ->when($request->email, function($query, $email) {
+                return $query->where('email', 'like', "%{$email}%");
+            })
+            ->orderBy('name')
+            ->paginate(10);
+
+        return view('exercises3.users.index', compact('users'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-            return view('exercises3.Users.create');
+        return view('exercises3.Users.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:8|confirmed'
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:8|confirmed', // Confirmed handles password confirmation
         ]);
 
-        $user = User::create([
-        'name' => $validatedData['name'],
-        'email' => $validatedData['email'],
-        'password' => bcrypt($validatedData['password'])
-    ]);
+        try {
+            User::create([
+                'name' => $validatedData['name'],
+                'email' => $validatedData['email'],
+                'password' => bcrypt($validatedData['password']),
+            ]);
 
-
-        return redirect()->route('exercises3.Users.index')->with('success', 'User created successfully.');
-        //
+            return redirect()->route('exercises3.Users.index')->with('success', 'User created successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('exercises3.Users.index')->with('error', 'Error creating user.');
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id) {
+    public function show(string $id)
+    {
         $user = User::findOrFail($id);
         $user->load('grades');
         return view('exercises3.Users.show', compact('user'));
     }
 
-    public function profile(string $id) {
+    public function profile(string $id)
+    {
         $user = User::findOrFail($id);
         $user->load('grades');
         return view('exercises3.Users.profile', compact('user'));
     }
-    /**
-     * Show the form for editing the specified resource.
-     */
+
     public function edit(string $id)
     {
         $user = User::findOrFail($id);
@@ -129,37 +81,40 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
+        // Validate user update data
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,'.$id,
-            'password' => 'nullable|min:8|confirmed'
+            'email' => 'required|email|unique:users,email,' . $id,
+            'password' => 'nullable|min:8|confirmed',
         ]);
 
+        // Update data, only change password if provided
         $updateData = [
             'name' => $validatedData['name'],
-            'email' => $validatedData['email']
+            'email' => $validatedData['email'],
         ];
 
-        // Only update password if provided
         if (!empty($validatedData['password'])) {
             $updateData['password'] = bcrypt($validatedData['password']);
         }
 
-        $user->update($updateData);
-
-        return redirect()->route('exercises3.Users.index')
-                       ->with('success', 'User updated successfully.');
+        try {
+            $user->update($updateData);
+            return redirect()->route('exercises3.Users.index')->with('success', 'User updated successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('exercises3.Users.index')->with('error', 'Error updating user.');
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $user = User::findOrFail($id);
-        $user->delete();
 
-        return redirect()->route('exercises3.Users.index')
-                         ->with('success', 'User deleted successfully.');
+        try {
+            $user->delete();
+            return redirect()->route('exercises3.Users.index')->with('success', 'User deleted successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('exercises3.Users.index')->with('error', 'Error deleting user.');
+        }
     }
 }

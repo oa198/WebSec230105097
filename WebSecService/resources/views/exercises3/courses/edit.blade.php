@@ -4,55 +4,38 @@
 
 @section('content')
 <div class="container">
-    <div class="card">
-        <div class="card-header">
-            <h5>Edit Course</h5>
+    <h2>Edit Course</h2>
+
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
-        <div class="card-body">
-            <form action="{{ route('courses.update', $course->id) }}" method="POST">
-                @csrf
-                @method('PUT')
+    @endif
 
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="course_code" class="form-label">Course Code</label>
-                        <input type="text" class="form-control @error('course_code') is-invalid @enderror"
-                               id="course_code" name="course_code" value="{{ old('course_code', $course->course_code) }}" required>
-                        @error('course_code')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label for="course_name" class="form-label">Course Name</label>
-                        <input type="text" class="form-control @error('course_name') is-invalid @enderror"
-                               id="course_name" name="course_name" value="{{ old('course_name', $course->course_name) }}" required>
-                        @error('course_name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-                        <label for="credit_hours" class="form-label">Credit Hours</label>
-                        <input type="number" class="form-control @error('credit_hours') is-invalid @enderror"
-                               id="credit_hours" name="credit_hours" value="{{ old('credit_hours', $course->credit_hours) }}"
-                               min="1" max="5" required>
-                        @error('credit_hours')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="mt-4">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Update Course
-                    </button>
-                    <a href="{{ route('courses.index') }}" class="btn btn-secondary">
-                        <i class="fas fa-times"></i> Cancel
-                    </a>
-                </div>
-            </form>
+    <form action="{{ route('exercises3.courses.update', $course->id) }}" method="POST">
+        @csrf
+        @method('PUT')
+        <div class="mb-3">
+            <label for="code" class="form-label">Course Code</label>
+            <input type="text" name="code" id="code" class="form-control" value="{{ old('code', $course->code) }}">
         </div>
-    </div>
+        <div class="mb-3">
+            <label for="name" class="form-label">Course Name</label>
+            <input type="text" name="name" id="name" class="form-control" value="{{ old('name', $course->name) }}">
+        </div>
+        <div class="mb-3">
+            <label for="credit_hours" class="form-label">Credit Hours</label>
+            <input type="number" name="credit_hours" id="credit_hours" class="form-control" value="{{ old('credit_hours', $course->credit_hours) }}">
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea name="description" id="description" class="form-control">{{ old('description', $course->description) }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Course</button>
+    </form>
 </div>
 @endsection

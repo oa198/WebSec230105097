@@ -3,16 +3,17 @@
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
-use App\Http\Controllers\GradeController; // Ensure this matches the actual namespace of GradeController
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CoursesController;
-use App\Http\Controllers\GradesController;
+use App\Http\Controllers\GradeController;
 
-Auth::routes();
+Auth::routes(['verify' => true]);
 
 Route::get('/home', function () {
     return view('Home');
 })->name('home');
+
+Route::middleware('auth')->group(function () {
 
 Route::get('/users', [UserController::class, 'index'])->name('exercises3.Users.index');
 Route::get('/users/create', [UserController::class, 'create'])->name('exercises3.Users.create');
@@ -25,11 +26,34 @@ Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('exerci
 // Now this route can work without conflict
 Route::get('/users/{user}', [UserController::class, 'show'])->name('exercises3.Users.show');
 
+});
+Route::middleware('auth')->group(function () {
+    Route::resource('grades', GradeController::class)->names([
+        'index' => 'exercises3.Grades.index',
+        'create' => 'exercises3.Grades.create',
+        'store' => 'exercises3.Grades.store',
+        'show' => 'exercises3.Grades.show',
+        'edit' => 'exercises3.Grades.edit',
+        'update' => 'exercises3.Grades.update',
+        'destroy' => 'exercises3.Grades.destroy',
+    ]);
+});
 
 
-Route::resource('courses', CoursesController::class);
-Route::resource('grades', GradesController::class);
-Route::get('/grades/{id}', [GradesController::class, 'show'])->name('exercises3.Grades.show');
+Route::middleware('auth')->group(function () {
+    Route::resource('courses', CoursesController::class)->names([
+        'index' => 'exercises3.courses.index',
+        'create' => 'exercises3.courses.create',
+        'store' => 'exercises3.courses.store',
+        'show' => 'exercises3.courses.show',
+        'edit' => 'exercises3.courses.edit',
+        'update' => 'exercises3.courses.update',
+        'destroy' => 'exercises3.courses.destroy',
+    ]);
+});
+
+
+
 
 
 // Rest of your routes remain unchanged

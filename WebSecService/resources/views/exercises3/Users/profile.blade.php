@@ -46,14 +46,16 @@
                                     <h6>Phone</h6>
                                     <p class="text-muted">{{ $user->phone ?? 'N/A' }}</p>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <h6>Role</h6>
-                                    <span class="badge bg-{{ $user->role === 'admin' ? 'danger' : ($user->role === 'editor' ? 'warning' : 'primary') }}">
-                                        {{ ucfirst($user->role) }}
-                                    </span>
-                                </div>
+                                <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <h6>Role</h6>
+                                            @foreach($user->getRoleNames() as $role)
+                                                <span class="badge bg-{{ $role === 'admin' ? 'danger' : ($role === 'editor' ? 'warning' : 'primary') }}">
+                                                    {{ ucfirst($role) }}
+                                                </span>
+                                            @endforeach
+                                        </div>
+                                    </div>
                                 <div class="col-md-6 mb-3">
                                     <h6>Status</h6>
                                     <span class="badge bg-{{ $user->is_active ? 'success' : 'secondary' }}">

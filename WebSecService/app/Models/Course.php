@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Course extends Model
 {
     protected $fillable = [ // ✅ تمت إضافته
-        'course_code',
-        'course_name',
+        'code',
+        'name',
         'credit_hours',
     ];
 

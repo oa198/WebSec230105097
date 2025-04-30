@@ -7,95 +7,88 @@ use App\Models\Course;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
-class GradesController extends Controller
+class GradeController extends Controller
 {
-    // إضافة middleware للتحقق من أن المستخدم مسجل دخوله
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
-    // عرض الدرجات الخاصة بالمستخدم
     public function index()
-    {
-        $grades = Grade::where('user_id', auth()->id())->get();
-        return view('exercises3.grades.index', compact('grades'));
-    }
+{
+    $grades = Grade::with(['course', 'user']) 
+        ->get()
+        ->groupBy([
+            'year',
+            function ($item) {
+                return $item->term;
+            }
+        ]);
 
-    // عرض صفحة إضافة درجة جديدة
+    return view('exercises3.Grades.index', compact('grades'));
+}
+
     public function create()
     {
         $courses = Course::all();
-        return view('exercises3.grades.create', compact('courses'));
+        return view('exercises3.Grades.create', compact('courses'));
     }
 
-    // تخزين درجة جديدة في قاعدة البيانات
     public function store(Request $request)
     {
         $request->validate([
-            'course_id' => 'required|exists:courses,id',
+            'course_code' => 'required|exists:courses,code',
             'grade' => 'required|string',
             'term' => 'required|integer',
             'year' => 'required|integer',
         ]);
 
         Grade::create([
-            'user_id' => auth()->user()->id,
-            'course_id' => $request->course_id,
+            'user_id' => auth()->id(),
+            'course_code' => $request->course_code,
             'grade' => $request->grade,
             'term' => $request->term,
             'year' => $request->year,
         ]);
 
-        return redirect()->route('exercises3.grades.index')->with('success', 'Grade added successfully.');
+        return redirect()->route('exercises3.Grades.index')->with('success', 'Grade added successfully.');
     }
 
-    // عرض صفحة تعديل درجة
     public function edit(Grade $grade)
     {
-        // التأكد أن الدرجة تخص المستخدم الحالي
         if ($grade->user_id != auth()->id()) {
-            return redirect()->route('exercises3.grades.index')->with('error', 'Unauthorized access.');
+            return redirect()->route('exercises3.Grades.index')->with('error', 'Unauthorized access.');
         }
 
         $courses = Course::all();
-        return view('exercises3.grades.edit', compact('grade', 'courses'));
+        return view('exercises3.Grades.edit', compact('grade', 'courses'));
     }
 
-    // تحديث درجة في قاعدة البيانات
     public function update(Request $request, Grade $grade)
     {
-        // التأكد أن الدرجة تخص المستخدم الحالي
         if ($grade->user_id != auth()->id()) {
-            return redirect()->route('exercises3.grades.index')->with('error', 'Unauthorized access.');
+            return redirect()->route('exercises3.Grades.index')->with('error', 'Unauthorized access.');
         }
 
         $request->validate([
-            'course_id' => 'required|exists:courses,id',
+            'course_code' => 'required|exists:courses,code',
             'grade' => 'required|string',
             'term' => 'required|integer',
             'year' => 'required|integer',
         ]);
 
         $grade->update([
-            'course_id' => $request->course_id,
+            'course_code' => $request->course_code,
             'grade' => $request->grade,
             'term' => $request->term,
             'year' => $request->year,
         ]);
 
-        return redirect()->route('exercises3.grades.index')->with('success', 'Grade updated successfully.');
+        return redirect()->route('exercises3.Grades.index')->with('success', 'Grade updated successfully.');
     }
 
-    // حذف درجة من قاعدة البيانات
     public function destroy(Grade $grade)
     {
-        // التأكد أن الدرجة تخص المستخدم الحالي
         if ($grade->user_id != auth()->id()) {
-            return redirect()->route('exercises3.grades.index')->with('error', 'Unauthorized access.');
+            return redirect()->route('exercises3.Grades.index')->with('error', 'Unauthorized access.');
         }
 
         $grade->delete();
-        return redirect()->route('exercises3.grades.index')->with('success', 'Grade deleted successfully.');
+        return redirect()->route('exercises3.Grades.index')->with('success', 'Grade deleted successfully.');
     }
 }

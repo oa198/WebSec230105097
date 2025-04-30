@@ -21,33 +21,31 @@
                 <div class="card-header">Term {{ $term }}</div>
                 <div class="card-body">
                     <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Course Code</th>
-                                <th>Course Name</th>
-                                <th>Credit Hours</th>
-                                <th>Grade</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($termGrades as $grade)
-                                <tr>
-                                    <td>{{ $grade->course_code }}</td>
-                                    <td>{{ $grade->course_name }}</td>
-                                    <td>{{ $grade->credit_hours }}</td>
-                                    <td>{{ $grade->grade }}</td>
-                                    <td>
-                                        <a href="{{ route('exercises3.Grades.edit', $grade->id) }}" class="btn btn-warning">Edit</a>
-                                        <form action="{{ route('exercises3.Grades.destroy', $grade->id) }}" method="POST" style="display:inline-block;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
+                    <thead>
+    <tr>
+        <th>User Name</th>
+        <th>Course Code</th>
+        <th>Grade</th>
+        <th>Actions</th>
+    </tr>
+</thead>
+<tbody>
+    @foreach($termGrades as $grade)
+        <tr>
+            <td>{{ $grade->user->name }}</td>
+            <td>{{ $grade->course_code }}</td>
+            <td>{{ $grade->grade }}</td>
+            <td>
+                <a href="{{ route('exercises3.Grades.edit', $grade->id) }}" class="btn btn-warning">Edit</a>
+                <form action="{{ route('exercises3.Grades.destroy', $grade->id) }}" method="POST" style="display:inline-block;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                </form>
+            </td>
+        </tr>
+    @endforeach
+</tbody>
                     </table>
                 </div>
             </div>

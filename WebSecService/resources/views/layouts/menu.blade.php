@@ -23,9 +23,11 @@
             <li><a class="dropdown-item" href="/products">Products</a></li>
             <li><a class="dropdown-item" href="/calculator">Calculator</a></li>
             <li><a class="dropdown-item" href="/calculatorGPA">GPA</a></li>
+            @if(auth()->user() && auth()->user()->hasRole('admin'))
             <li><a class="dropdown-item" href="/users">Users</a></li>
             <li><a class="dropdown-item" href="/grades">Grades</a></li>
             <li><a class="dropdown-item" href="/courses">Courses</a></li>
+            @endif
           </ul>
         </li>
       </ul>
