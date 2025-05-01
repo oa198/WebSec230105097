@@ -31,8 +31,12 @@ class User extends Authenticatable
     }
 
     public function grades()
-    {
-        return $this->hasMany(Grade::class);
-    }
+{
+    return $this->hasMany(Grade::class);
 }
 
+    public function courses()
+{
+    return $this->belongsToMany(Course::class, 'course_user');
+}
+}
