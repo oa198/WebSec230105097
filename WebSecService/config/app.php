@@ -54,6 +54,9 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+
+
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
@@ -122,5 +125,14 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
+
+    'aliases' => [
+
+    'App' => Illuminate\Support\Facades\App::class,
+    'Auth' => Illuminate\Support\Facades\Auth::class,
+    'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+
+],
+
 
 ];
