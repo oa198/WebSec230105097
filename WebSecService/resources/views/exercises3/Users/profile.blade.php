@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'User Details')
+@section('title', 'User Profile')
 
 @section('content')
 <div class="container">
@@ -9,24 +9,27 @@
             <div class="card shadow">
                 <div class="card-header bg-primary text-white">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h4 class="mb-0">User Details</h4>
-                        <a href="{{ route('exercises3.Users.index') }}" class="btn btn-light btn-sm">
-                            <i class="fas fa-arrow-left"></i> Back to List
+                        <h4 class="mb-0">User Profile</h4>
+                        <a href="{{ route('home') }}" class="btn btn-light btn-sm">
+                            <i class="fas fa-arrow-left"></i> Back to Home
                         </a>
                     </div>
                 </div>
 
                 <div class="card-body">
-                    <!-- Profile Picture and Basic Info -->
                     <div class="row mb-4">
                         <div class="col-md-4 text-center">
                             <div class="mb-3">
                                 @if($user->profile_picture)
-                                    <img src="{{ asset('storage/' . $user->profile_picture) }}" class="img-thumbnail rounded-circle" alt="Profile Picture" style="width: 150px; height: 150px; object-fit: cover;">
+                                <img src="{{ asset('storage/' . $user->profile_picture) }}"
+                                     class="img-thumbnail rounded-circle"
+                                     alt="Profile Picture"
+                                     style="width: 150px; height: 150px; object-fit: cover;">
                                 @else
-                                    <div class="d-flex align-items-center justify-content-center bg-light rounded-circle" style="width: 150px; height: 150px;">
-                                        <i class="fas fa-user fa-4x text-secondary"></i>
-                                    </div>
+                                <div class="d-flex align-items-center justify-content-center bg-light rounded-circle"
+                                     style="width: 150px; height: 150px;">
+                                    <i class="fas fa-user fa-4x text-secondary"></i>
+                                </div>
                                 @endif
                             </div>
                         </div>
@@ -46,16 +49,17 @@
                                     <h6>Phone</h6>
                                     <p class="text-muted">{{ $user->phone ?? 'N/A' }}</p>
                                 </div>
-                                <div class="row">
+                            </div>
+                            <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <h6>Role</h6>
                                             @foreach($user->getRoleNames() as $role)
-                                                <span class="badge bg-{{ $role === 'admin' ? 'danger' : ($role === 'editor' ? 'warning' : 'primary') }}">
+                                                <span class="badge bg-{{ $role === 'admin' ? 'danger' : ($role === 'students' ? 'warning' : 'doctors') }}">
                                                     {{ ucfirst($role) }}
                                                 </span>
                                             @endforeach
                                         </div>
-                                    </div>
+
                                 <div class="col-md-6 mb-3">
                                     <h6>Status</h6>
                                     <span class="badge bg-{{ $user->is_active ? 'success' : 'secondary' }}">
@@ -66,7 +70,6 @@
                         </div>
                     </div>
 
-                    <!-- Additional Information -->
                     <div class="border-top pt-3">
                         <h5 class="mb-3">Additional Information</h5>
                         <div class="row">
@@ -85,11 +88,10 @@
                         </div>
                     </div>
 
-                    <!-- Courses and Grades Section -->
                     <div class="border-top pt-3">
-                        <h5 class="mb-3">Courses and Grades</h5>
+                        <h5 class="mb-3">Academic Grades</h5>
 
-                        @if($user->courses && $user->courses->isNotEmpty())
+                        @if($user->grades && $user->grades->isNotEmpty())
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover">
                                     <thead class="table-light">
@@ -109,19 +111,19 @@
                                             $totalQualityPoints = 0;
                                         @endphp
 
-                                        @foreach($user->courses as $course)
+                                        @foreach($user->grades as $grade)
                                             <tr>
-                                                <td>{{ $course->course_code }}</td>
-                                                <td>{{ $course->course_name }}</td>
-                                                <td>{{ $course->credit_hours }}</td>
-                                                <td>{{ $course->pivot->grade ?? 'N/A' }}</td>
-                                                <td>Term {{ $course->pivot->term }}</td>
-                                                <td>{{ $course->pivot->year }}</td>
-                                                <td>{{ number_format($course->pivot->quality_points, 2) }}</td>
+                                            <td>{{ $grade->course->code }}</td>
+                                            <td>{{ $grade->course->name }}</td>
+                                                <td>{{ $grade->course->credit_hours }}</td>
+                                                <td>{{ $grade->grade }}</td>
+                                                <td>Term {{ $grade->term }}</td>
+                                                <td>{{ $grade->year }}</td>
+                                                <td>{{ number_format($grade->quality_points, 2) }}</td>
                                             </tr>
                                             @php
-                                                $totalCreditHours += $course->credit_hours;
-                                                $totalQualityPoints += $course->pivot->quality_points;
+                                                $totalCreditHours += $grade->credit_hours;
+                                                $totalQualityPoints += $grade->quality_points;
                                             @endphp
                                         @endforeach
                                     </tbody>
@@ -143,7 +145,7 @@
                             </div>
                         @else
                             <div class="alert alert-info">
-                                No courses or grades recorded for this user.
+                                No grades recorded for this user.
                             </div>
                         @endif
                     </div>

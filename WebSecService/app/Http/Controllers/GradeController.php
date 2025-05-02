@@ -4,49 +4,53 @@ namespace App\Http\Controllers;
 
 use App\Models\Grade;
 use App\Models\Course;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
 class GradeController extends Controller
 {
     public function index()
-{
-    $grades = Grade::with(['course', 'user']) 
-        ->get()
-        ->groupBy([
-            'year',
-            function ($item) {
-                return $item->term;
-            }
-        ]);
+    {
+        $grades = Grade::with(['user:id,name', 'course:id,code,name,credit_hours'])
+                    ->get()
+                    ->groupBy(['year', 'term']);
 
-    return view('exercises3.Grades.index', compact('grades'));
-}
+        return view('exercises3.grades.index', compact('grades'));
+    }
+
 
     public function create()
     {
-        $courses = Course::all();
-        return view('exercises3.Grades.create', compact('courses'));
+        $users = User::all(['id', 'name']); 
+        $courses = Course::all(['code', 'name', 'credit_hours']);
+
+        return view('exercises3.grades.create', compact('users', 'courses'));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'course_code' => 'required|exists:courses,code',
-            'grade' => 'required|string',
-            'term' => 'required|integer',
-            'year' => 'required|integer',
+            'grade' => 'required|in:A+,A,A-,B+,B,B-,C+,C,C-,D+,D,F',
+            'term' => 'required|integer|min:1|max:3',
+            'year' => 'required|integer|min:2000|max:2099',
+            'user_id' => 'required|exists:users,id'
         ]);
 
-        Grade::create([
-            'user_id' => auth()->id(),
-            'course_code' => $request->course_code,
-            'grade' => $request->grade,
-            'term' => $request->term,
-            'year' => $request->year,
+        $course = Course::where('code', $validated['course_code'])->first();
+
+        $grade = Grade::create([
+            'user_id' => $validated['user_id'],
+            'course_code' => $validated['course_code'],
+            'grade' => $validated['grade'],
+            'term' => $validated['term'],
+            'year' => $validated['year'],
+            'quality_points' => (new Grade())->gradePoint * $course->credit_hours
         ]);
 
-        return redirect()->route('exercises3.Grades.index')->with('success', 'Grade added successfully.');
+        return redirect()->route('exercises3.Grades.index')
+                         ->with('success', 'Grade added successfully');
     }
 
     public function edit(Grade $grade)

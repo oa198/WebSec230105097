@@ -51,12 +51,15 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <h6>Role</h6>
-                                    <span class="badge bg-{{ $user->role === 'admin' ? 'danger' : ($user->role === 'editor' ? 'warning' : 'primary') }}">
-                                        {{ ucfirst($user->role) }}
-                                    </span>
-                                </div>
+                                        <div class="col-md-6 mb-3">
+                                            <h6>Role</h6>
+                                            @foreach($user->getRoleNames() as $role)
+                                                <span class="badge bg-{{ $role === 'admin' ? 'danger' : ($role === 'editor' ? 'warning' : 'primary') }}">
+                                                    {{ ucfirst($role) }}
+                                                </span>
+                                            @endforeach
+                                        </div>
+
                                 <div class="col-md-6 mb-3">
                                     <h6>Status</h6>
                                     <span class="badge bg-{{ $user->is_active ? 'success' : 'secondary' }}">
@@ -110,9 +113,9 @@
 
                                         @foreach($user->grades as $grade)
                                             <tr>
-                                                <td>{{ $grade->course_code }}</td>
-                                                <td>{{ $grade->course_name }}</td>
-                                                <td>{{ $grade->credit_hours }}</td>
+                                                <td>{{ $grade->course->code }}</td>
+                                                <td>{{ $grade->course->name }}</td>
+                                                <td>{{ $grade->course->credit_hours }}</td>
                                                 <td>{{ $grade->grade }}</td>
                                                 <td>Term {{ $grade->term }}</td>
                                                 <td>{{ $grade->year }}</td>

@@ -10,7 +10,7 @@
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">
                         <i class="fas fa-user-edit me-2"></i>
-                        Edit User: Mohamed Ahmed
+                        Edit User: {{$user -> name}}
                     </h5>
                 </div>
 
