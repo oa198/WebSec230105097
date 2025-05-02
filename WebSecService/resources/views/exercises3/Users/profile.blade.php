@@ -10,9 +10,16 @@
                 <div class="card-header bg-primary text-white">
                     <div class="d-flex justify-content-between align-items-center">
                         <h4 class="mb-0">User Profile</h4>
+                        @if(auth()->user() && auth()->user()->hasRole(['students', 'doctors']))
                         <a href="{{ route('home') }}" class="btn btn-light btn-sm">
                             <i class="fas fa-arrow-left"></i> Back to Home
                         </a>
+                        @endif
+                        @if(auth()->user() && auth()->user()->hasRole('admin'))
+                        <a href="{{ route('exercises3.Users.index') }}" class="btn btn-light btn-sm">
+                            <i class="fas fa-arrow-left"></i> Back to Users
+                        </a>
+                        @endif
                     </div>
                 </div>
 
@@ -69,7 +76,7 @@
                             </div>
                         </div>
                     </div>
-
+                    @if(auth()->user() && auth()->user()->hasRole('students'))
                     <div class="border-top pt-3">
                         <h5 class="mb-3">Additional Information</h5>
                         <div class="row">
@@ -150,18 +157,13 @@
                         @endif
                     </div>
                 </div>
+                @endif
 
                 <div class="card-footer d-flex justify-content-end">
                     <a href="{{ route('exercises3.Users.edit', $user->id) }}" class="btn btn-primary me-2">
                         <i class="fas fa-edit"></i> Edit Profile
                     </a>
-                    <form action="{{ route('exercises3.Users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?')">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger">
-                            <i class="fas fa-trash-alt"></i> Delete User
-                        </button>
-                    </form>
+                  
                 </div>
             </div>
         </div>

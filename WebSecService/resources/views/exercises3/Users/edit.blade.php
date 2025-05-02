@@ -82,7 +82,10 @@
                             </div>
                         </div>
 
-                        <div class="d-flex justify-content-end border-top pt-3">
+                        <div class="d-flex justify-content-end border-top pt-3 gap-2">
+                            <a href="{{ route('exercises3.Users.profile', $user->id) }}" class="btn btn-light">
+                                <i class="fas fa-arrow-left me-1"></i> Cancel
+                            </a>
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save me-1"></i> Update User
                             </button>

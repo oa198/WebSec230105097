@@ -76,9 +76,7 @@
                     <button type="submit" class="btn btn-primary">
                         <i class="fas fa-save"></i> Update Grade
                     </button>
-                    <a href="{{ route('exercises3.Grades.index') }}" class="btn btn-secondary">
-                        <i class="fas fa-times"></i> Cancel
-                    </a>
+                    
                 </div>
             </form>
         </div>
