@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 
 @section('content')
@@ -51,7 +52,7 @@
                             </div>
                         </div>
 
-                        <div class="row mb-0">
+                        <div class="row mb-3">
                             <div class="col-md-8 offset-md-4">
                                 <button type="submit" class="btn btn-primary">
                                     {{ __('Login') }}
@@ -64,6 +65,18 @@
                                 @endif
                             </div>
                         </div>
+
+                        <!-- Social Login Buttons -->
+                        <div class="row mb-0">
+                            <div class="col-md-8 offset-md-4">
+                                <a href="{{ route('social.login', 'facebook') }}" class="btn btn-primary" style="background-color: #3b5998; margin-bottom: 10px;">
+                                    <i class="fab fa-facebook-f mr-2"></i> Login with Facebook
+                                </a>
+                                <a href="{{ route('social.login', 'google') }}" class="btn btn-danger">
+                                    <i class="fab fa-google mr-2"></i> Login with Google
+                                </a>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -71,3 +84,4 @@
     </div>
 </div>
 @endsection
+

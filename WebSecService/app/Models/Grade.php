@@ -37,14 +37,14 @@ class Grade extends Model
     }
 
     public function getCreditHoursAttribute()
-    {
-        return $this->course->credit_hours ?? 0;
-    }
+{
+    return $this->course?->credit_hours ?? 0;
+}
 
-    public function getQualityPointsAttribute()
-    {
-        return $this->grade_point * $this->course->credit_hours;
-    }
+public function getQualityPointsAttribute()
+{
+    return $this->grade_point * ($this->course?->credit_hours ?? 0);
+}
 
 
     public function getCourseCodeAttribute()

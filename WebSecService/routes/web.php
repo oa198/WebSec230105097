@@ -6,8 +6,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CoursesController;
 use App\Http\Controllers\GradeController;
+use App\Http\Controllers\Auth\SocialLoginController;
+
+
 
 Auth::routes(['verify' => true]);
+Route::get('/auth/{provider}', [SocialLoginController::class, 'redirectToProvider'])->name('social.login');
+Route::get('/auth/{provider}/callback', [SocialLoginController::class, 'handleProviderCallback'])->name('social.callback');
+
 
 Route::get('/home', function () {
     return view('Home');

@@ -131,7 +131,7 @@ return [
     'App' => Illuminate\Support\Facades\App::class,
     'Auth' => Illuminate\Support\Facades\Auth::class,
     'Socialite' => Laravel\Socialite\Facades\Socialite::class,
-
+    'Route' => Illuminate\Support\Facades\Route::class,
 ],
 
 

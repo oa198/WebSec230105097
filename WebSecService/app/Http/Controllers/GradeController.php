@@ -22,36 +22,35 @@ class GradeController extends Controller
 
     public function create()
     {
-        $users = User::all(['id', 'name']); 
+        $users = User::all(['id', 'name']);
         $courses = Course::all(['code', 'name', 'credit_hours']);
 
         return view('exercises3.grades.create', compact('users', 'courses'));
     }
 
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'course_code' => 'required|exists:courses,code',
-            'grade' => 'required|in:A+,A,A-,B+,B,B-,C+,C,C-,D+,D,F',
-            'term' => 'required|integer|min:1|max:3',
-            'year' => 'required|integer|min:2000|max:2099',
-            'user_id' => 'required|exists:users,id'
-        ]);
+{
+    $validated = $request->validate([
+        'course_code' => 'required|exists:courses,code',
+        'grade' => 'required|in:A+,A,A-,B+,B,B-,C+,C,C-,D+,D,F',
+        'term' => 'required|integer|min:1|max:3',
+        'year' => 'required|integer|min:2000|max:2099',
+        'user_id' => 'required|exists:users,id'
+    ]);
 
-        $course = Course::where('code', $validated['course_code'])->first();
+    $course = Course::where('code', $validated['course_code'])->first();
 
-        $grade = Grade::create([
-            'user_id' => $validated['user_id'],
-            'course_code' => $validated['course_code'],
-            'grade' => $validated['grade'],
-            'term' => $validated['term'],
-            'year' => $validated['year'],
-            'quality_points' => (new Grade())->gradePoint * $course->credit_hours
-        ]);
+    $grade = Grade::create([
+        'user_id' => $validated['user_id'],
+        'course_id' => $course->id, // ✅ أصل العلاقة الصحيح
+        'grade' => $validated['grade'],
+        'term' => $validated['term'],
+        'year' => $validated['year'],
+    ]);
 
-        return redirect()->route('exercises3.Grades.index')
-                         ->with('success', 'Grade added successfully');
-    }
+    return redirect()->route('exercises3.Grades.index')
+                     ->with('success', 'Grade added successfully');
+}
 
     public function edit(Grade $grade)
     {
@@ -88,10 +87,7 @@ class GradeController extends Controller
 
     public function destroy(Grade $grade)
     {
-        if ($grade->user_id != auth()->id()) {
-            return redirect()->route('exercises3.Grades.index')->with('error', 'Unauthorized access.');
-        }
-
+       
         $grade->delete();
         return redirect()->route('exercises3.Grades.index')->with('success', 'Grade deleted successfully.');
     }

@@ -12,13 +12,13 @@ class GradesSeeder extends Seeder
         Grade::create([
             'student_name' => 'John Doe',
             'grade' => 'A',
-            'course' => 'Web Security', // تأكد من وضع قيمة للعمود course
+            'course' => 'Web Security', 
         ]);
 
         Grade::create([
             'student_name' => 'Jane Smith',
             'grade' => 'B',
-            'course' => 'Cybersecurity', // أضف قيمة هنا أيضًا
+            'course' => 'Cybersecurity',
         ]);
     }
 }
