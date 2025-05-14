@@ -58,6 +58,8 @@ Route::middleware('auth')->group(function () {
     ]);
 });
 
+Route::get('/exercises3/courses/search', [CoursesController::class, 'search'])->name('exercises3.courses.search');
+
 
 
 

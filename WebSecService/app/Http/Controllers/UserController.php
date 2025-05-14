@@ -71,40 +71,63 @@ class UserController extends Controller
         return view('exercises3.Users.profile', compact('user'));
     }
 
+
+
     public function edit(string $id)
-    {
-        $user = User::findOrFail($id);
-        return view('exercises3.Users.edit', compact('user'));
+{
+    $user = User::findOrFail($id);
+    // Load available roles and permissions
+    $roles = Role::all();
+    $permissions = Permission::all();
+
+    // Pass the roles and permissions to the view
+    return view('exercises3.Users.edit', compact('user', 'roles', 'permissions'));
+}
+
+
+
+public function update(Request $request, string $id)
+{
+    $user = User::findOrFail($id);
+
+    $validatedData = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email,' . $id,
+        'password' => 'nullable|min:8|confirmed',
+        'roles' => 'nullable|array',
+        'permissions' => 'nullable|array',
+    ]);
+
+    $updateData = [
+        'name' => $validatedData['name'],
+        'email' => $validatedData['email'],
+    ];
+
+    if (!empty($validatedData['password'])) {
+        $updateData['password'] = bcrypt($validatedData['password']);
     }
 
-    public function update(Request $request, string $id)
-    {
-        $user = User::findOrFail($id);
+    try {
+        $user->update($updateData);
 
-        // Validate user update data
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $id,
-            'password' => 'nullable|min:8|confirmed',
-        ]);
 
-        // Update data, only change password if provided
-        $updateData = [
-            'name' => $validatedData['name'],
-            'email' => $validatedData['email'],
-        ];
-
-        if (!empty($validatedData['password'])) {
-            $updateData['password'] = bcrypt($validatedData['password']);
+        if ($request->has('roles')) {
+            $roleNames = Role::whereIn('id', $request->input('roles'))->pluck('name')->toArray();
+            $user->syncRoles($roleNames);
         }
 
-        try {
-            $user->update($updateData);
-            return redirect()->route('exercises3.Users.index')->with('success', 'User updated successfully.');
-        } catch (\Exception $e) {
-            return redirect()->route('exercises3.Users.index')->with('error', 'Error updating user.');
+        if ($request->has('permissions')) {
+            $permissionNames = Permission::whereIn('id', $request->input('permissions'))->pluck('name')->toArray();
+            $user->syncPermissions($permissionNames);
         }
+
+        return redirect()->route('exercises3.Users.index')->with('success', 'User updated successfully.');
+    } catch (\Exception $e) {
+        return redirect()->route('exercises3.Users.index')->with('error', 'Error updating user.');
     }
+}
+
+
 
     public function destroy(string $id)
     {

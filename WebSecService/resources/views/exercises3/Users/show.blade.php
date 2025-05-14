@@ -51,14 +51,23 @@
                                 </div>
                             </div>
                             <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <h6>Role</h6>
-                                            @foreach($user->getRoleNames() as $role)
-                                                <span class="badge bg-{{ $role === 'admin' ? 'danger' : ($role === 'editor' ? 'warning' : 'primary') }}">
-                                                    {{ ucfirst($role) }}
-                                                </span>
-                                            @endforeach
-                                        </div>
+                                <div class="col-md-6 mb-3">
+                                    <h6>Roles</h6>
+                                    @foreach($user->getRoleNames() as $role)
+                                        <span class="badge bg-{{ $role === 'admin' ? 'danger' : ($role === 'editor' ? 'warning' : 'primary') }}">
+                                            {{ ucfirst($role) }}
+                                        </span>
+                                    @endforeach
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <h6>Permissions</h6>
+                                    @foreach($user->permissions as $permission)
+                                        <span class="badge bg-info">
+                                            {{ ucfirst($permission->name) }}
+                                        </span>
+                                    @endforeach
+                                </div>
 
                                 <div class="col-md-6 mb-3">
                                     <h6>Status</h6>

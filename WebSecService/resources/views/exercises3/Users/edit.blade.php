@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Edit User: user -> name')
+@section('title', 'Edit User: ' . $user->name)
 
 @section('content')
 <div class="container py-4">
@@ -10,7 +10,7 @@
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">
                         <i class="fas fa-user-edit me-2"></i>
-                        Edit User: {{$user -> name}}
+                        Edit User: {{$user->name}}
                     </h5>
                 </div>
 
@@ -19,6 +19,7 @@
                         @csrf
                         @method('PUT')
 
+                        <!-- User Info Fields -->
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="name" class="form-label">Full Name *</label>
@@ -43,6 +44,7 @@
                             </div>
                         </div>
 
+                        <!-- Password Option Fields -->
                         <div class="mb-3">
                             <label class="form-label">Password Options</label>
                             <div class="form-check mb-2">
@@ -61,17 +63,50 @@
                             </div>
                         </div>
 
+                        <!-- Role and Permission Selection -->
+                        <div class="mb-3">
+                            <label class="form-label">Roles</label>
+                            <div>
+                                @foreach ($roles as $role)
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="roles[]"
+                                               value="{{ $role->id }}" {{ in_array($role->id, $user->roles->pluck('id')->toArray()) ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="role_{{ $role->id }}">
+                                            {{ $role->name }}
+                                        </label>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Permissions</label>
+                            <div>
+                                @foreach ($permissions as $permission)
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="permissions[]"
+                                               value="{{ $permission->id }}" {{ in_array($permission->id, $user->permissions->pluck('id')->toArray()) ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="permission_{{ $permission->id }}">
+                                            {{ $permission->name }}
+                                        </label>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+
+                        <!-- Password Fields (only shown if "Set new password" is selected) -->
                         <div id="password_fields" class="mb-3">
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="password" class="form-label">New Password</label>
                                     <input type="password" class="form-control"
-                                           id="password" name="password" >
+                                           id="password" name="password">
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="password_confirmation" class="form-label">Confirm Password</label>
                                     <input type="password" class="form-control"
-                                           id="password_confirmation" name="password_confirmation" >
+                                           id="password_confirmation" name="password_confirmation">
                                 </div>
                             </div>
                             <div class="alert alert-info py-2">
@@ -82,6 +117,7 @@
                             </div>
                         </div>
 
+                        <!-- Buttons -->
                         <div class="d-flex justify-content-end border-top pt-3 gap-2">
                             <a href="{{ route('exercises3.Users.profile', $user->id) }}" class="btn btn-light">
                                 <i class="fas fa-arrow-left me-1"></i> Cancel
@@ -96,6 +132,7 @@
         </div>
     </div>
 </div>
+@endsection
 
 @section('scripts')
 <script>
@@ -121,5 +158,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-@endsection
 @endsection

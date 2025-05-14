@@ -15,6 +15,20 @@
         </div>
     @endif
 
+    <!-- عرض keyword بدون هروب (Reflected XSS) -->
+    @if(isset($keyword))
+        <p>نتائج البحث عن: {!! $keyword !!}</p>
+    @endif
+
+    <div class="mb-4">
+        <form method="GET" action="{{ route('exercises3.courses.search') }}">
+            <div class="input-group">
+                <input type="text" name="keyword" class="form-control" placeholder="Search by course name">
+                <button type="submit" class="btn btn-secondary">Search</button>
+            </div>
+        </form>
+    </div>
+
     <table class="table">
         <thead>
             <tr>
@@ -29,7 +43,7 @@
             @foreach($courses as $course)
             <tr>
                 <td>{{ $course->code }}</td>
-                <td>{{ $course->name }}</td>
+                <td>{!! $course->name !!}</td> <!-- عرض name بدون هروب (Stored XSS) -->
                 <td>{{ $course->credit_hours }}</td>
                 <td>{{ $course->description }}</td>
                 <td>
