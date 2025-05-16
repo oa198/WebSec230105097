@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CoursesController;
 use App\Http\Controllers\GradeController;
 use App\Http\Controllers\Auth\SocialLoginController;
-
+use App\Http\Controllers\CryptoController;
 
 
 Auth::routes(['verify' => true]);
@@ -15,7 +15,7 @@ Route::get('/auth/{provider}', [SocialLoginController::class, 'redirectToProvide
 Route::get('/auth/{provider}/callback', [SocialLoginController::class, 'handleProviderCallback'])->name('social.callback');
 
 
-Route::get('/home', function () {
+Route::get('/', function () {
     return view('Home');
 })->name('home');
 
@@ -62,6 +62,11 @@ Route::get('/exercises3/courses/search', [CoursesController::class, 'search'])->
 
 
 
+
+
+Route::get('/ecn-and-dec', [CryptoController::class, 'show']);
+Route::post('/ecn-and-dec/encrypt', [CryptoController::class, 'encrypt']);
+Route::post('/ecn-and-dec/decrypt', [CryptoController::class, 'decrypt']);
 
 
 // Rest of your routes remain unchanged
