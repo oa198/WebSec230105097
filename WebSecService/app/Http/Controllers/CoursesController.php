@@ -10,18 +10,18 @@ class CoursesController extends Controller
 
     public function search(Request $request)
     {
-        // $keyword = $request->input('keyword');
-        // // تخزين keyword في الداتابيز (لـ Stored XSS)
-        // Course::create([
-        //     'code' => 'TEST' . rand(100, 999),
-        //     'name' => $keyword, // ضعيف: بيخزن إدخال خام
-        //     'credit_hours' => 3,
-        //     'description' => 'Test course'
-        // ]);
-        // // استعلام خام (ضعيف لـ SQLi)
-        // $query = "SELECT * FROM courses WHERE name LIKE '%$keyword%'";
-        // $courses = DB::select($query);
-        // return view('exercises3.courses.index', compact('courses', 'keyword'));
+        $keyword = $request->input('keyword');
+        
+        Course::create([
+            'code' => 'TEST' . rand(100, 999),
+            'name' => $keyword,
+            'credit_hours' => 3,
+            'description' => 'Test course'
+        ]);
+
+        $query = "SELECT * FROM courses WHERE name LIKE '%$keyword%'";
+        $courses = DB::select($query);
+        return view('exercises3.courses.index', compact('courses', 'keyword'));
     }
     // Display the list of all courses
     public function index()

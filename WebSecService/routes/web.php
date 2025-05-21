@@ -8,7 +8,7 @@ use App\Http\Controllers\CoursesController;
 use App\Http\Controllers\GradeController;
 use App\Http\Controllers\Auth\SocialLoginController;
 use App\Http\Controllers\CryptoController;
-
+use Illuminate\Support\Facades\Crypt;
 
 Auth::routes(['verify' => true]);
 Route::get('/auth/{provider}', [SocialLoginController::class, 'redirectToProvider'])->name('social.login');
@@ -64,9 +64,6 @@ Route::get('/exercises3/courses/search', [CoursesController::class, 'search'])->
 
 
 
-Route::get('/ecn-and-dec', [CryptoController::class, 'show']);
-Route::post('/ecn-and-dec/encrypt', [CryptoController::class, 'encrypt']);
-Route::post('/ecn-and-dec/decrypt', [CryptoController::class, 'decrypt']);
 
 
 // Rest of your routes remain unchanged
@@ -162,3 +159,67 @@ Route::get('/test', function () {
 });
 
 
+
+
+
+
+
+
+Route::get('/cryptography', function (Request $request) {
+    $data = $request->input('data', 'Welcome to Cryptography');
+    $action = $request->input('action', 'Encrypt');
+    $result = $request->input('result', '');
+    $status = 'Failed';
+
+    if ($action === 'Encrypt') {
+        // AES Encryption
+        $temp = openssl_encrypt($data, 'aes-128-ecb', 'thisisasecretkey', OPENSSL_RAW_DATA, '');
+        if ($temp) {
+            $result = base64_encode($temp);
+            $status = 'Encrypted Successfully';
+        }
+    } elseif ($action === 'Decrypt') {
+        // AES Decryption
+        $temp = base64_decode($data);
+        $result = openssl_decrypt($temp, 'aes-128-ecb', 'thisisasecretkey', OPENSSL_RAW_DATA, '');
+        if ($result) {
+            $status = 'Decrypted Successfully';
+        }
+    } elseif ($action === 'Hash') {
+        // SHA-256 Hashing
+        $temp = hash('sha256', $data);
+        $result = base64_encode($temp);
+        $status = 'Hashed Successfully';
+    } elseif ($action === 'Sign') {
+        // RSA Signing
+        $path = storage_path('app/private/useremail@domain.com.pfx');
+        $password = '12345678';
+        $certificates = [];
+        $pfx = file_get_contents($path);
+        if (openssl_pkcs12_read($pfx, $certificates, $password)) {
+            $privateKey = $certificates['pkey'];
+            $signature = '';
+            if (openssl_sign($data, $signature, $privateKey, 'sha256')) {
+                $result = base64_encode($signature);
+                $status = 'Signed Successfully';
+            }
+        } else {
+            $status = 'Failed to load private key';
+        }
+    } elseif ($action === 'Verify') {
+        // RSA Verification
+        $signature = base64_decode($result);
+        $path = storage_path('app/public/useremail@domain.com.crt');
+        $publicKey = file_get_contents($path);
+        $verifyResult = openssl_verify($data, $signature, $publicKey, 'sha256');
+        if ($verifyResult === 1) {
+            $status = 'Verified Successfully';
+        } elseif ($verifyResult === 0) {
+            $status = 'Verification Failed';
+        } else {
+            $status = 'Error during Verification';
+        }
+    }
+
+    return view('encAndDec.cryptography', compact('data', 'result', 'action', 'status'));
+})->name('cryptography');
