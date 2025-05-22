@@ -5,25 +5,36 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Exception;
+
 class CoursesController extends Controller
 {
 
     public function search(Request $request)
-    {
-        $keyword = $request->input('keyword');
-        
-        Course::create([
-            'code' => 'TEST' . rand(100, 999),
-            'name' => $keyword,
-            'credit_hours' => 3,
-            'description' => 'Test course'
-        ]);
+{
+    $keyword = $request->input('keyword');
 
+   
+    Course::create([
+        'code' => 'TEST' . rand(100, 999),
+        'name' => $keyword,
+        'credit_hours' => 3,
+        'description' => 'Test course'
+    ]);
+
+    $courses = [];
+    $error = null;
+
+    try {
         $query = "SELECT * FROM courses WHERE name LIKE '%$keyword%'";
         $courses = DB::select($query);
-        return view('exercises3.courses.index', compact('courses', 'keyword'));
+    } catch (Exception $e) {
+        $error = 'Not this courses';
     }
-    // Display the list of all courses
+
+    return view('exercises3.courses.index', compact('courses', 'keyword', 'error'));
+}
+
     public function index()
     {
         $courses = Course::all();

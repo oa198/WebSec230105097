@@ -9,6 +9,13 @@ use App\Http\Controllers\GradeController;
 use App\Http\Controllers\Auth\SocialLoginController;
 use App\Http\Controllers\CryptoController;
 use Illuminate\Support\Facades\Crypt;
+use App\Models\User;
+
+
+
+
+
+
 
 Auth::routes(['verify' => true]);
 Route::get('/auth/{provider}', [SocialLoginController::class, 'redirectToProvider'])->name('social.login');
@@ -192,7 +199,7 @@ Route::get('/cryptography', function (Request $request) {
         $status = 'Hashed Successfully';
     } elseif ($action === 'Sign') {
         // RSA Signing
-        $path = storage_path('app/private/useremail@domain.com.pfx');
+        $path = storage_path('app/private/user.pfx');
         $password = '12345678';
         $certificates = [];
         $pfx = file_get_contents($path);
@@ -209,7 +216,7 @@ Route::get('/cryptography', function (Request $request) {
     } elseif ($action === 'Verify') {
         // RSA Verification
         $signature = base64_decode($result);
-        $path = storage_path('app/public/useremail@domain.com.crt');
+        $path = storage_path('app/public/user.crt');
         $publicKey = file_get_contents($path);
         $verifyResult = openssl_verify($data, $signature, $publicKey, 'sha256');
         if ($verifyResult === 1) {
